@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "Login";
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<h2 style="text-align:center;">Login</h2>
+
+<div class="login-register-form">
+    @using (Html.BeginForm("", "", FormMethod.Post, new { id = "loginForm" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <label>Email</label>
+        <input type="email" id="email" name="Email" required class="form-control" />
+
+        <label>Password</label>
+        <input type="password" id="password" name="Password" required class="form-control" />
+
+        <button type="submit">Login</button>
+    }
+
+    <div id="error-message" style="color: red; display:none;"></div>
+
+    <div class="alt-link">
+        <p>Don't have an account? <a href="@Url.Action("Register", "Users")">Click here to register!</a></p>
+    </div>
+</div>
+
+<script>
+    $("#loginForm").submit(function (event) {
+        event.preventDefault();
+
+        var email = $("#email").val();
+        var password = $("#password").val();
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: '/Users/Login',
+            data: {
+                email: email,
+                password: password,
+                __RequestVerificationToken: token
+            },
+            success: function (response) {
+                if (response.success) {
+                    window.location.href = response.redirectTo;
+                } else {
+                    $("#error-message").text(response.message).show();
+                }
+            },
+            error: function () {
+                $("#error-message").text("An error occurred during login. Please try again.").show();
+            }
+        });
+    });
+</script>
+
+

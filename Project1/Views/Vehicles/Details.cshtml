@@ -1,0 +1,72 @@
+﻿@model Project1.Models.Vehicles
+
+@{
+    ViewBag.Title = "Details";
+    var imagePaths = string.IsNullOrEmpty(Model.ImagePath)
+        ? new string[0]
+        : Model.ImagePath.Split(',');
+}
+
+<h2 class="text-center">Vehicle Details</h2>
+
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 30px;">
+    <!-- Left: Vehicle details -->
+    <div style="flex: 1;">
+        <dl class="dl-horizontal">
+            <dt>Host:</dt>
+            <dd>@Model.Host</dd>
+
+            <dt>Make:</dt>
+            <dd>@Model.Make</dd>
+
+            <dt>Location:</dt>
+            <dd>@Model.Location</dd>
+
+            <dt>Price:</dt>
+            <dd>$@Model.Price</dd>
+
+            <dt>Mileage:</dt>
+            <dd>@Model.Mileage</dd>
+
+            <dt>Gas:</dt>
+            <dd>@Model.Gas</dd>
+
+            <dt>Doors:</dt>
+            <dd>@Model.Doors</dd>
+
+            <dt>Seats:</dt>
+            <dd>@Model.Seats</dd>
+        </dl>
+
+        <p>
+            @Html.ActionLink("Back to List", "Index")
+            @if (Session["Role"] != null && Session["Role"].ToString() == "Admin")
+            {
+                @: &nbsp;
+                @Html.ActionLink("Edit", "Edit", new { id = Model.Id })
+                @: &nbsp;
+                @Html.ActionLink("Delete", "Delete", new { id = Model.Id })
+            }
+        </p>
+    </div>
+
+    <!-- Right: Vehicle images -->
+    <div style="flex-shrink: 0;">
+        @if (imagePaths.Length > 0)
+        {
+            foreach (var path in imagePaths)
+            {
+                var fullPath = Url.Content("~/" + path.TrimStart('/'));
+                <div style="margin-bottom: 20px; text-align: center;">
+                    <img src="@fullPath" alt="Vehicle Image" style="width: 300px; height: auto; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" />
+                    <br />
+                    <a href="@fullPath" download class="btn btn-sm btn-outline-primary mt-2">Download</a>
+                </div>
+            }
+        }
+        else
+        {
+            <span>No Images Available</span>
+        }
+    </div>
+</div>

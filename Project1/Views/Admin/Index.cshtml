@@ -1,0 +1,98 @@
+﻿@model IEnumerable<Project1.Models.Users>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Admin Panel</h2>
+
+<ul>
+    <li><a href="@Url.Action("Index", "Users")">Users</a></li>
+    <li><a href="@Url.Action("Index", "Vehicles")">Vehicles</a></li>
+    <!-- <li><a href="@Url.Action("Index", "Ratings")">Ratings</a></li> -->
+</ul>
+
+<h2>Manage Users</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken() <!-- Include the Anti-Forgery Token here -->
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Name</td>
+                    <td>@user.Email</td>
+                    <td>
+                        <select class="role-dropdown" data-user-id="@user.Id">
+                            <option value="User" @(user.Role == "User" ? "selected" : "")>User</option>
+                            <option value="Admin" @(user.Role == "Admin" ? "selected" : "")>Admin</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="update-role-btn" data-user-id="@user.Id">Update Role</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No users found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="error-message" style="color: red; display:none;"></div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // When the update role button is clicked
+            $(".update-role-btn").click(function () {
+                var userId = $(this).data("user-id");
+                var newRole = $(this).closest("tr").find(".role-dropdown").val();
+
+                // Get the Anti-Forgery Token value from the page
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                // Send the AJAX request to update the role
+                $.ajax({
+                    type: "POST",
+                    url: '/Users/UpdateUserRole',  // Ensure the URL corresponds to your controller action
+                    data: {
+                        userId: userId,
+                        newRole: newRole,
+                        __RequestVerificationToken: token  // Include the token in the request data
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);  // Handle success response
+                        } else {
+                            $("#error-message").text(response.message).show();  // Handle error response
+                        }
+                    },
+                    error: function () {
+                        $("#error-message").text("An error occurred while updating the role. Please try again.").show();  // Handle error in AJAX
+                    }
+                });
+            });
+        });
+    </script>
+}

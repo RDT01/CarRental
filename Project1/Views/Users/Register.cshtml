@@ -1,0 +1,51 @@
+﻿@model Project1.Models.Users
+@{
+    ViewBag.Title = "Register";
+}
+
+<h2 style="text-align:center;">Register</h2>
+
+<div class="login-register-form">
+    @using (Html.BeginForm("Register", "Users", FormMethod.Post, new { id = "registerForm" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <label>Name</label>
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+
+        <label>Email</label>
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+
+        <label>Password</label>
+        <input type="password" name="Password" class="form-control" />
+
+        <label>Address</label>
+        @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+
+        <label>Phone</label>
+        @Html.TextBoxFor(m => m.Phone, new
+        {
+            @class = "form-control",
+            id = "Phone",
+            placeholder = "123-456-7890"
+        })
+
+        <label>Role</label>
+        @Html.DropDownList("Role", new SelectList(new[] { "User", "Admin" }), "Select Role", new { @class = "form-control" })
+
+        <button type="submit">Register</button>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("registerForm").addEventListener("submit", function (e) {
+            var phone = document.getElementById("Phone").value;
+            var cleaned = phone.replace(/[^0-9]/g, '');
+            if (!/^[0-9\s-]*$/.test(phone) || cleaned.length !== 10) {
+                e.preventDefault();
+                alert("Phone number must contain only digits, spaces, or dashes and exactly 10 digits.");
+            }
+        });
+    </script>
+}

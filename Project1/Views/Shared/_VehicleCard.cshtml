@@ -1,0 +1,14 @@
+﻿@model Project1.Models.Vehicles
+
+<div class="card mb-3" style="width: 18rem;">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Make - @Model.Location</h5>
+        <p class="card-text">
+            Price: $@Model.Price<br>
+            Mileage: @Model.Mileage km<br>
+            Gas: @Model.Gas<br>
+            Seats: @Model.Seats<br>
+        </p>
+        @Html.ActionLink("Details", "Details", "Vehicles", new { id = Model.Id }, new { @class = "btn btn-primary" })
+    </div>
+</div>

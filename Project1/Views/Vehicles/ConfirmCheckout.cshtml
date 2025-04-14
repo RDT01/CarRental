@@ -1,0 +1,12 @@
+﻿@model IEnumerable<Project1.Models.Vehicles>
+
+@{
+    ViewBag.Title = "Checkout Confirmation";
+}
+
+<div class="text-center mt-5">
+    <h2>Thank you for your reservation!</h2>
+    <p>Your vehicle rental has been successfully processed.</p>
+
+    <a href="@Url.Action("Index", "Vehicles")" class="btn btn-primary mt-3">Back to Vehicles</a>
+</div>

@@ -1,0 +1,58 @@
+﻿@model Project1.Models.Ratings
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Ratings</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Cleanliness)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Cleanliness)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Maintenance)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Maintenance)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Communication)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Communication)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Accuracy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Accuracy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Feedback)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Feedback)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
