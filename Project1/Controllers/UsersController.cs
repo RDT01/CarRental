@@ -92,16 +92,35 @@ namespace Project1.Controllers
         [HttpPost]
         [AdminAuthorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Email,Address,Phone")] Users users)
+        public ActionResult Edit([Bind(Include = "Id,Name,Email,Password,Address,Phone")] Users users)
         {
+            var existingUser = db.Users.Find(users.Id);
+            if (existingUser == null)
+            {
+                return HttpNotFound();
+            }
+
             if (ModelState.IsValid)
             {
-                db.Entry(users).State = EntityState.Modified;
+                // Update fields
+                existingUser.Name = users.Name;
+                existingUser.Email = users.Email;
+                existingUser.Address = users.Address;
+                existingUser.Phone = users.Phone;
+
+                // Only update password if one was entered
+                if (!string.IsNullOrWhiteSpace(users.PasswordHash))
+                {
+                    existingUser.PasswordHash = HashPassword(users.PasswordHash);
+                }
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(users);
+
+            return View(existingUser);
         }
+
 
         // GET: Users/Delete/5
         [AdminAuthorize]

@@ -4,14 +4,7 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
-
-<p>
-    @if (Session["Role"] != null && Session["Role"].ToString() == "Admin")
-    {
-        @Html.ActionLink("Create New", "Create")
-    }
-</p>
+<h2>User List</h2>
 
 <!-- User Table -->
 <table class="table">
