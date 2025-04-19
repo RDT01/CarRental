@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace Project1.Filters // or whatever your namespace is
+namespace Project1.Filters
 {
     public class AdminAuthorizeAttribute : AuthorizeAttribute
     {

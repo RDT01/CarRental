@@ -8,7 +8,7 @@
 <div class="login-register-form">
     @using (Html.BeginForm("", "", FormMethod.Post, new { id = "loginForm" }))
     {
-        @Html.AntiForgeryToken()
+        @Html.AntiForgeryToken() <!-- CSRF protection -->
 
         <label>Email</label>
         <input type="email" id="email" name="Email" required class="form-control" />
@@ -19,6 +19,7 @@
         <button type="submit">Login</button>
     }
 
+    <!-- Error message container shown dynamically if login fails -->
     <div id="error-message" style="color: red; display:none;"></div>
 
     <div class="alt-link">
@@ -27,13 +28,15 @@
 </div>
 
 <script>
+    // Handles form submission via AJAX instead of traditional postback
     $("#loginForm").submit(function (event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent normal form submit
 
         var email = $("#email").val();
         var password = $("#password").val();
-        var token = $('input[name="__RequestVerificationToken"]').val();
+        var token = $('input[name="__RequestVerificationToken"]').val(); // Grabs anti-forgery token
 
+        // Sends login credentials to server using AJAX
         $.ajax({
             type: "POST",
             url: '/Users/Login',
@@ -44,16 +47,15 @@
             },
             success: function (response) {
                 if (response.success) {
-                    window.location.href = response.redirectTo;
+                    window.location.href = response.redirectTo; // Redirects if login successful
                 } else {
-                    $("#error-message").text(response.message).show();
+                    $("#error-message").text(response.message).show(); // Displays server error message
                 }
             },
             error: function () {
+                // Generic fallback error message
                 $("#error-message").text("An error occurred during login. Please try again.").show();
             }
         });
     });
 </script>
-
-

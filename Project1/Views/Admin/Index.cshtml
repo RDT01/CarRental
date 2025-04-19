@@ -9,6 +9,7 @@
 <ul>
     <li><a href="@Url.Action("Index", "Users")">Users</a></li>
     <li><a href="@Url.Action("Index", "Vehicles")">Vehicles</a></li>
+    <li><a href="@Url.Action("Import", "Vehicles")">Import CSV File</a></li>
     <!-- <li><a href="@Url.Action("Index", "Ratings")">Ratings</a></li> -->
 </ul>
 
@@ -16,7 +17,7 @@
 
 @using (Html.BeginForm())
 {
-    @Html.AntiForgeryToken() <!-- Include the Anti-Forgery Token here -->
+    @Html.AntiForgeryToken() 
 }
 
 <table>
@@ -64,7 +65,6 @@
 
     <script>
         $(document).ready(function () {
-            // When the update role button is clicked
             $(".update-role-btn").click(function () {
                 var userId = $(this).data("user-id");
                 var newRole = $(this).closest("tr").find(".role-dropdown").val();
@@ -75,7 +75,7 @@
                 // Send the AJAX request to update the role
                 $.ajax({
                     type: "POST",
-                    url: '/Users/UpdateUserRole',  // Ensure the URL corresponds to your controller action
+                    url: '/Users/UpdateUserRole',
                     data: {
                         userId: userId,
                         newRole: newRole,
@@ -83,9 +83,9 @@
                     },
                     success: function (response) {
                         if (response.success) {
-                            alert(response.message);  // Handle success response
+                            alert(response.message);  
                         } else {
-                            $("#error-message").text(response.message).show();  // Handle error response
+                            $("#error-message").text(response.message).show(); 
                         }
                     },
                     error: function () {

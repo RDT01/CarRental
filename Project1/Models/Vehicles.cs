@@ -21,7 +21,7 @@ namespace Project1.Models
         public string Make { get; set; }
 
         [StringLength(100)]
-        public string Location { get; set; }
+        public string Model { get; set; }
 
         public decimal Price { get; set; }
         public int Mileage { get; set; }
@@ -32,7 +32,6 @@ namespace Project1.Models
         public int Doors { get; set; }
         public int Seats { get; set; }
 
-        // Add ImagePath here
         [StringLength(255)]
         public string ImagePath { get; set; }
     }

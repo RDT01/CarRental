@@ -120,7 +120,7 @@
                 <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li>@Html.ActionLink("Vehicles", "Index", "Vehicles", null, new { @class = "nav-link" })</li>
-
+                        <li>@Html.ActionLink("About Us", "About", "Home", null, new { @class = "nav-link" })</li>
                         @if (Session["Role"] != null && Session["Role"].ToString() == "Admin")
                         {
                             <li>@Html.ActionLink("Users", "Index", "Users", null, new { @class = "nav-link" })</li>
@@ -159,6 +159,9 @@
 
         <!-- Footer -->
         <footer>
+            
+            @Html.ActionLink("FAQ", "Questions", "Home", null, new { @class = "nav-link" })
+            
             <p>&copy; @DateTime.Now.Year - Car Rental Service — All rights reserved.</p>
         </footer>
     </div>

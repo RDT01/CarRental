@@ -1,0 +1,81 @@
+﻿@model Project1.Models.CsvPreviewViewModel
+
+@{
+    Layout = null;
+    ViewBag.Title = "CSV Preview and Mapping";
+    var modelFields = new[] { "", "Make", "Model", "Price", "Mileage", "Gas", "Doors", "Seats" };
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 class="mb-4">CSV Preview</h2>
+
+        @if (Model.Headers != null && Model.Headers.Any())
+        {
+            <form method="post" action="@Url.Action("ImportMappedCsv", "Vehicles")">
+                @Html.AntiForgeryToken()
+
+                <table class="table table-bordered table-sm">
+                    <thead class="thead-light">
+                        <tr>
+                            @for (int i = 0; i < Model.Headers.Count; i++)
+                            {
+                                <th>
+                                    @Model.Headers[i] <!-- Display CSV column name -->
+
+                                    <br />
+
+                                    <!-- Dropdown for mapping each CSV column to a database field -->
+                                    <select name="ColumnMappings" class="form-control form-control-sm">
+                                        @foreach (var field in modelFields)
+                                        {
+                                            <option value="@field">@field</option>
+                                        }
+                                    </select>
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.PreviewRows != null && Model.PreviewRows.Any())
+                        {
+                            foreach (var row in Model.PreviewRows)
+                            {
+                                <tr>
+                                    @foreach (var cell in row)
+                                    {
+                                        <td>@cell</td>
+                                    }
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="@Model.Headers.Count">No data rows available for preview.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <!-- Hidden field to pass headers to the controller -->
+                <input type="hidden" name="Headers" value="@string.Join(",", Model.Headers)" />
+
+                <button type="submit" class="btn btn-success">Start Import</button>
+            </form>
+        }
+        else
+        {
+            <!-- If no headers are available -->
+            <div class="alert alert-warning">No data was found in the file.</div>
+        }
+    </div>
+</body>
+</html>

@@ -8,7 +8,7 @@
 <div class="login-register-form">
     @using (Html.BeginForm("Register", "Users", FormMethod.Post, new { id = "registerForm" }))
     {
-        @Html.AntiForgeryToken()
+        @Html.AntiForgeryToken() <!-- Helps protect against cross-site request forgery -->
 
         <label>Name</label>
         @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
@@ -17,7 +17,7 @@
         @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
 
         <label>Password</label>
-        <input type="password" name="Password" class="form-control" />
+        <input type="password" name="Password" class="form-control" /> <!-- Not using PasswordFor to avoid binding plain text password -->
 
         <label>Address</label>
         @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
@@ -27,11 +27,11 @@
         {
             @class = "form-control",
             id = "Phone",
-            placeholder = "123-456-7890"
+            placeholder = "123-456-7890" // User-friendly formatting hint
         })
 
         <label>Role</label>
-        @Html.DropDownList("Role", new SelectList(new[] { "User", "Admin" }), "Select Role", new { @class = "form-control" })
+        @Html.DropDownList("Role", new SelectList(new[] { "User", "Admin" }), "Select Role", new { @class = "form-control" }) <!-- Populates role options -->
 
         <button type="submit">Register</button>
     }
@@ -39,6 +39,7 @@
 
 @section Scripts {
     <script>
+        // Client-side phone validation to ensure format and length before submit
         document.getElementById("registerForm").addEventListener("submit", function (e) {
             var phone = document.getElementById("Phone").value;
             var cleaned = phone.replace(/[^0-9]/g, '');

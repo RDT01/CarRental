@@ -17,9 +17,15 @@
 
 <!-- Search Results Section -->
 <h3 class="text-center mt-5">Search Results</h3>
-
 <div id="searchResults" class="d-flex flex-wrap justify-content-center"></div>
 <div id="noResultsMessage" class="text-center" style="display:none;">No vehicles found matching your search.</div>
+
+<!-- Pagination Controls for Search -->
+<div class="text-center mt-3" id="searchPagination" style="display:none;">
+    <button id="prevSearchPage" class="btn btn-secondary">Previous</button>
+    <span id="searchPageInfo" class="mx-2"></span>
+    <button id="nextSearchPage" class="btn btn-secondary">Next</button>
+</div>
 
 <!-- Recommended Vehicles Section -->
 <h3 class="text-center mt-5">Recommended Vehicles</h3>
@@ -34,7 +40,7 @@
         <a href="@detailUrl" class="vehicle-card" style="text-decoration: none; color: inherit;">
             <img src="@imagePath" alt="@vehicle.Make" class="vehicle-image" />
             <h4>@vehicle.Make</h4>
-            <p>@vehicle.Location</p>
+            <p>@vehicle.Model</p>
             <p>Price: $@vehicle.Price</p>
         </a>
     }
@@ -43,40 +49,69 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#searchString').on('input', function () {
-            var searchString = $(this).val();
+        let searchPage = 1;
+        let totalSearchPages = 1;
+
+        function fetchSearchResults(query, page = 1) {
             $.ajax({
-                url: '@Url.Action("Index", "Home")',
+                url: '@Url.Action("SearchVehicles", "Vehicles")',
                 type: 'GET',
-                data: { searchString: searchString },
+                data: { searchString: query, page: page },
                 success: function (data) {
                     $('#searchResults').html('');
                     $('#noResultsMessage').hide();
 
-                    if (Array.isArray(data) && data.length === 0) {
+                    if (!data || !data.vehicles || data.vehicles.length === 0) {
                         $('#noResultsMessage').show();
-                    } else {
-                        data.forEach(function (vehicle) {
-                            var firstImage = (vehicle.ImagePath || '').split(',')[0];
-                            var imagePath = firstImage ? firstImage : '/Content/placeholder.jpg';
-                            var detailUrl = '/Vehicles/Details/' + vehicle.Id;
-
-                            var vehicleCard = `
-                                <a href="${detailUrl}" class="vehicle-card" style="text-decoration: none; color: inherit;">
-                                    <img src="${imagePath}" alt="${vehicle.Make}" class="vehicle-image" />
-                                    <h4>${vehicle.Make}</h4>
-                                    <p>${vehicle.Location}</p>
-                                    <p>Price: $${vehicle.Price}</p>
-                                </a>
-                            `;
-                            $('#searchResults').append(vehicleCard);
-                        });
+                        $('#searchPagination').hide();
+                        return;
                     }
+
+                    data.vehicles.forEach(function (vehicle) {
+                        var firstImage = (vehicle.ImagePath || '').split(',')[0];
+                        var imagePath = firstImage ? '/' + firstImage.replace(/^\/+/, '') : '/Content/placeholder.jpg';
+                        var detailUrl = '/Vehicles/Details/' + vehicle.Id;
+
+                        var vehicleCard = `
+                            <a href="${detailUrl}" class="vehicle-card" style="text-decoration: none; color: inherit;">
+                                <img src="${imagePath}" alt="${vehicle.Make}" class="vehicle-image" />
+                                <h4>${vehicle.Make}</h4>
+                                <p>${vehicle.Location}</p>
+                                <p>Price: $${parseFloat(vehicle.Price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                            </a>
+                        `;
+                        $('#searchResults').append(vehicleCard);
+                    });
+
+                    searchPage = data.currentPage;
+                    totalSearchPages = data.totalPages;
+                    $('#searchPageInfo').text(`Page ${searchPage} of ${totalSearchPages}`);
+                    $('#searchPagination').toggle(totalSearchPages > 1);
                 },
                 error: function () {
                     alert("An error occurred while searching vehicles.");
                 }
             });
+        }
+
+        $('#searchString').on('input', function () {
+            searchPage = 1;
+            const query = $(this).val();
+            fetchSearchResults(query, searchPage);
+        });
+
+        $('#prevSearchPage').click(function () {
+            if (searchPage > 1) {
+                searchPage--;
+                fetchSearchResults($('#searchString').val(), searchPage);
+            }
+        });
+
+        $('#nextSearchPage').click(function () {
+            if (searchPage < totalSearchPages) {
+                searchPage++;
+                fetchSearchResults($('#searchString').val(), searchPage);
+            }
         });
     });
 </script>

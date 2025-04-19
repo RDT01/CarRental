@@ -17,7 +17,7 @@ namespace Project1.Controllers
     {
         private UsersContext db = new UsersContext();
 
-        // GET: Users
+        // Display all users
         public ActionResult Index()
         {
             using (var db = new UsersContext())
@@ -27,7 +27,7 @@ namespace Project1.Controllers
             }
         }
 
-        // GET: Users/Details/5
+        // Show details for a specific user
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -42,20 +42,16 @@ namespace Project1.Controllers
             return View(users);
         }
 
-        // GET: Users/Create
+        // GET form to create a user (Admin only)
         [AdminAuthorize]
-
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Add new user to the database (Admin only)
         [HttpPost]
         [AdminAuthorize]
-
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Name,Email,Address,Phone")] Users users)
         {
@@ -69,9 +65,8 @@ namespace Project1.Controllers
             return View(users);
         }
 
-        // GET: Users/Edit/5
+        // GET: Load user edit form (Admin only)
         [AdminAuthorize]
-
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -86,9 +81,7 @@ namespace Project1.Controllers
             return View(users);
         }
 
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Save updated user info to the database (Admin only)
         [HttpPost]
         [AdminAuthorize]
         [ValidateAntiForgeryToken]
@@ -102,13 +95,13 @@ namespace Project1.Controllers
 
             if (ModelState.IsValid)
             {
-                // Update fields
+                // Update basic user fields
                 existingUser.Name = users.Name;
                 existingUser.Email = users.Email;
                 existingUser.Address = users.Address;
                 existingUser.Phone = users.Phone;
 
-                // Only update password if one was entered
+                // Only update password if one was provided
                 if (!string.IsNullOrWhiteSpace(users.PasswordHash))
                 {
                     existingUser.PasswordHash = HashPassword(users.PasswordHash);
@@ -121,10 +114,8 @@ namespace Project1.Controllers
             return View(existingUser);
         }
 
-
-        // GET: Users/Delete/5
+        // GET: Confirm delete user (Admin only)
         [AdminAuthorize]
-
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -139,7 +130,7 @@ namespace Project1.Controllers
             return View(users);
         }
 
-        // POST: Users/Delete/5
+        // POST: Actually delete user (Admin only)
         [HttpPost, ActionName("Delete")]
         [AdminAuthorize]
         [ValidateAntiForgeryToken]
@@ -151,6 +142,7 @@ namespace Project1.Controllers
             return RedirectToAction("Index");
         }
 
+        // Dispose database resources
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -160,11 +152,13 @@ namespace Project1.Controllers
             base.Dispose(disposing);
         }
 
+        // Load registration page
         public ActionResult Register()
         {
             return View();
         }
 
+        // POST: Register a new user with hashed password
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Register(Users model, string Password, string Role)
@@ -177,7 +171,7 @@ namespace Project1.Controllers
                     var hash = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
 
                     model.PasswordHash = hash;
-                    model.Role = Role; // Set role from dropdown
+                    model.Role = Role; // Role selected from dropdown
                 }
 
                 db.Users.Add(model);
@@ -189,7 +183,7 @@ namespace Project1.Controllers
             return View(model);
         }
 
-        // Hashing function
+        // Utility method to hash a password string
         private string HashPassword(string password)
         {
             using (SHA256 sha256 = SHA256.Create())
@@ -199,13 +193,15 @@ namespace Project1.Controllers
             }
         }
 
+        // Load login page
         public ActionResult Login()
         {
             return View();
         }
 
+        // POST: Validate login credentials and assign session
         [HttpPost]
-        [ValidateAntiForgeryToken] // This ensures the token is validated
+        [ValidateAntiForgeryToken]
         public JsonResult Login(string email, string password)
         {
             var user = db.Users.FirstOrDefault(u => u.Email == email);
@@ -230,22 +226,22 @@ namespace Project1.Controllers
             }
         }
 
-
+        // Compare entered password against stored hash
         private bool VerifyPassword(string enteredPassword, string storedPasswordHash)
         {
             string enteredPasswordHash = HashPassword(enteredPassword);
             return enteredPasswordHash == storedPasswordHash;
         }
 
+        // Clear all session data (logout)
         public ActionResult Logout()
         {
-            // Clear the session
             Session.Clear();
 
-            // Redirect to the homepage after logout
             return RedirectToAction("Index", "Home");
         }
 
+        // POST: Admin can update a user's role via AJAX
         [HttpPost]
         [AdminAuthorize]
         [ValidateAntiForgeryToken]
@@ -260,6 +256,5 @@ namespace Project1.Controllers
             }
             return Json(new { success = false, message = "User not found." });
         }
-
     }
 }

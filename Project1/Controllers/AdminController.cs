@@ -35,7 +35,7 @@ namespace Project1.Controllers
             return View(users); // Show the Admin Panel if authorized
         }
 
-        // GET: Admin/Details/5
+        // GET: Admin/Details/id
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -57,8 +57,6 @@ namespace Project1.Controllers
         }
 
         // POST: Admin/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Name,Email,Address,Phone,PasswordHash")] Users users)
@@ -73,7 +71,7 @@ namespace Project1.Controllers
             return View(users);
         }
 
-        // GET: Admin/Edit/5
+        // GET: Admin/Edit/id
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -88,9 +86,7 @@ namespace Project1.Controllers
             return View(users);
         }
 
-        // POST: Admin/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Admin/Edit/id
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Name,Email,Address,Phone,PasswordHash")] Users users)
@@ -104,7 +100,7 @@ namespace Project1.Controllers
             return View(users);
         }
 
-        // GET: Admin/Delete/5
+        // GET: Admin/Delete/id
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -119,7 +115,7 @@ namespace Project1.Controllers
             return View(users);
         }
 
-        // POST: Admin/Delete/5
+        // POST: Admin/Delete/id
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

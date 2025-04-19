@@ -13,7 +13,7 @@
         <thead>
             <tr>
                 <th>Make</th>
-                <th>Location</th>
+                <th>Model</th>
                 <th>Price</th>
                 <th>Rental Date</th>
             </tr>
@@ -23,7 +23,7 @@
             {
                 <tr>
                     <td>@item.Make</td>
-                    <td>@item.Location</td>
+                    <td>@item.Model</td>
                     <td>$@item.Price.ToString("N2")</td>
                     <td>
                         <input type="date" name="RentalDate_@item.Id" class="form-control" required />
